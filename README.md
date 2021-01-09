@@ -12,7 +12,7 @@ Demo: https://nchantre.com/wp/wp-content/experiments/drone.html
 - r: comma separated moments of rotation with the following structure: degrees@timecode+duration
 
 The degrees have to have a 'deg' suffix since the value is injected directly in CSS.
-The duration has to have a 's' suffix.
+The duration has to have an 's' suffix.
 
 ### Example
 
