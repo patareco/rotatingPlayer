@@ -4,7 +4,7 @@
 	<!-- Rotating Player v0.1
 		 By: Miguel Santos
 	 -->
-	<title>Showreel Drone</title>
+	<title>Rotating Player v0.1</title>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.slim.min.js"></script>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
@@ -202,7 +202,12 @@
 	function onPlayerReady(event) {
 	//event.target.playVideo();
 		$('#duration').text(formatTime( player.getDuration() ));
-		rp.push({'time': player.getDuration(), 'rotation': '0deg', 'duration': '0s'})
+
+		//add a no transform until the first rotation point if not defined
+		if (rp[0].time != 0)
+			rp.unshift({'time': 0, 'rotation': '0deg', 'duration': '0.5s'});
+		
+		rp.push({'time': player.getDuration(), 'rotation': '0deg', 'duration': '0s'});
 		startInterval();
 		console.log(event);
 	}
