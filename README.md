@@ -6,6 +6,8 @@ Demo: https://nchantre.com/wp/wp-content/experiments/drone.html
 
 ## dynamic URL loading
 
+The player assumes a 9:16 aspect ratio. Will implement more options in the future.
+
 ### URL Params
 
 - id: Youtube Video ID
