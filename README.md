@@ -1,6 +1,6 @@
 # rotatingYTPlayer
 
-A simple custom youtube player that change orientation for videos that are both vertical and horizontal.
+A simple custom youtube player that change orientation for videos that are both vertical and horizontal. The target usage is mainly on desktop since most user can't easily rotate their screen.
 
 Demo: https://nchantre.com/wp/wp-content/experiments/drone.html
 
