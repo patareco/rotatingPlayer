@@ -19,7 +19,7 @@
 <div id="controls">
 	<div id="tc"><span id="current-time">0:00</span> / <span id="duration"></span></div>
 	
-	<input type="range" id="progress-bar" value="0">
+	<input type="range" id="progress-bar" value="0" min="0" max="1000">
 	
 	<div id="play">
 		<svg width="16px" height="16px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
@@ -149,28 +149,29 @@
 	const vertical = true;
 	let r    = getQueryVariable("r");
 	var rp = [];
+	var isSeeking = false;
 	//-90deg@20+2s,0deg@40+0.5s
+	if (r) {
+		r = r.split(',');
+		console.log(r);
 
-	r = r.split(',');
-	console.log(r);
+		r.forEach( (point,index) => {
+			// rp.index = index;
+			let params = point.split('@');
+			let tParams = params[1].split('+');
 
-	r.forEach( (point,index) => {
-		// rp.index = index;
-		let params = point.split('@');
-		let tParams = params[1].split('+');
+			let rotation = params[0],
+				time     = tParams[0],
+				duration = tParams[1];
 
-		let rotation = params[0],
-			time     = tParams[0],
-			duration = tParams[1];
+			rp[index] = {};
+			rp[index].rotation =  rotation;
+			rp[index].time =  time;
+			rp[index].duration =  duration;
+		});
 
-		rp[index] = {};
-		rp[index].rotation =  rotation;
-		rp[index].time =  time;
-		rp[index].duration =  duration;
-	});
-
-
-	console.log(rp);
+		console.log(rp);
+	}
 
 
 	// 3. This function creates an <iframe> (and YouTube player)
@@ -202,12 +203,16 @@
 	function onPlayerReady(event) {
 	//event.target.playVideo();
 		$('#duration').text(formatTime( player.getDuration() ));
-
-		//add a no transform until the first rotation point if not defined
-		if (rp[0].time != 0)
-			rp.unshift({'time': 0, 'rotation': '0deg', 'duration': '0.5s'});
 		
-		rp.push({'time': player.getDuration(), 'rotation': '0deg', 'duration': '0s'});
+		if (r) {
+			//add a no transform until the first rotation point if not defined
+			if (rp[0].time != 0)
+				rp.unshift({'time': 0, 'rotation': '0deg', 'duration': '0.5s'});
+					
+			rp.push({'time': player.getDuration(), 'rotation': '0deg', 'duration': '0s'});
+		}
+
+
 		startInterval();
 		console.log(event);
 	}
@@ -239,24 +244,25 @@
 
 	    var $el = $('#wrapper')
 	    // rpLen = rp.length;
+	    if (r) {
+		    rp.forEach( (point, i) => {
+		    	let intDeg = Math.abs( parseInt( point.rotation.replace('deg', '') ) );
 
-	    rp.forEach( (point, i) => {
-	    	let intDeg = Math.abs( parseInt( point.rotation.replace('deg', '') ) );
+		    	if (tc >= point.time && tc < rp[i+1].time ) {
+			    	console.log(intDeg);
+			    	console.log('45', between(intDeg, 0, 45));
+			    	console.log('180', between(intDeg, 135, 225));
 
-	    	if (tc >= point.time && tc < rp[i+1].time ) {
-		    	console.log(intDeg);
-		    	console.log('45', between(intDeg, 0, 45));
-		    	console.log('180', between(intDeg, 135, 225));
+		    		if ( ( between(intDeg, 0, 45) || between(intDeg, 135, 225) ) && vertical ) {
+		    			scale = 1;
+		    			console.log('ran the ifs');
+		    		}
 
-	    		if ( ( between(intDeg, 0, 45) || between(intDeg, 135, 225) ) && vertical ) {
-	    			scale = 1;
-	    			console.log('ran the ifs');
-	    		}
-
-	    		$el.css('transition', 'transform ' + point.duration );
-	        	$el.css('transform', 'scale('+scale+') rotate('+ point.rotation +')');
-	    	}
-	    });
+		    		$el.css('transition', 'transform ' + point.duration );
+		        	$el.css('transform', 'scale('+scale+') rotate('+ point.rotation +')');
+		    	}
+		    });
+		}
 
 	    // if (player.getCurrentTime() > 46) {
 	    //      //changeSrc();
@@ -279,8 +285,10 @@
 	    //   	$('#wrapper').css('transform', 'scale('+scale+') rotate(-270deg)');
 
 	    //   }
-	      updateProgressBar();
-	      updateTimerDisplay();
+	    if (!isSeeking)
+	    	updateProgressBar();
+	    
+	    updateTimerDisplay();
 	   }, 1000)
 	}
 
@@ -317,16 +325,20 @@
 
 
 
-
+	$('#progress-bar').on('mousedown touchstart', function (e) {
+		isSeeking = true;
+	});
 
 	$('#progress-bar').on('mouseup touchend', function (e) {
 
 	    // Calculate the new time for the video.
 	    // new time in seconds = total duration in seconds * ( value of range input / 100 )
-	    var newTime = player.getDuration() * (e.target.value / 100);
+	    var newTime = player.getDuration() * (e.target.value / 1000);
 
 	    // Skip video to new time.
 	    player.seekTo(newTime);
+
+	    isSeeking = false;
 
 	});
 
@@ -337,7 +349,7 @@
 	// This function is called by startInterval()
 	function updateProgressBar(){
 	    // Update the value of our progress bar accordingly.
-	    $('#progress-bar').val((player.getCurrentTime() / player.getDuration()) * 100);
+	    $('#progress-bar').val((player.getCurrentTime() / player.getDuration()) * 1000);
 	}
 	// This function is called by startInterval()
 	function updateTimerDisplay(){
