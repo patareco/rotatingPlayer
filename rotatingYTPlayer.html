@@ -214,7 +214,7 @@
 			rp.push({'time': player.getDuration(), 'rotation': '0deg', 'duration': '0s'});
 		}
 
-
+		calcPlayerMargin();
 		startInterval();
 		console.log(event);
 	}
@@ -392,6 +392,25 @@
 		return(false);
 	}
 
+
+	//correct margin for very narrow screens
+	function calcPlayerMargin() {
+		var pw = $('#player').width();
+		var ww = $(window).width();
+		var dif = ww - pw;
+		console.log(dif);
+		if ( dif < 0 ) {
+			dif = dif /2;
+			$('#wrapper').css('margin-left', dif + 'px')
+		} else {
+			$('#wrapper').css('margin-left', 'auto')
+		}
+	}
+
+	//event listener for win resize
+	window.addEventListener("resize", function() {
+	    calcPlayerMargin();
+	});
 
 
 	//idle function to hide controls
