@@ -189,6 +189,7 @@
 	    controls: 0,
 	    rel:0,
 	    fs: 0,
+	    playsinline: 1,
 	    enablejsapi:1,
 	    modestbranding: 1, showinfo: 0, ecver: 2,
 	    vq: '1080'
@@ -380,6 +381,7 @@
 	  }
 	}
 
+	// https://css-tricks.com/snippets/javascript/get-url-variables/
 	function getQueryVariable(variable) {
 		var query = window.location.search.substring(1);
 		var vars = query.split("&");
