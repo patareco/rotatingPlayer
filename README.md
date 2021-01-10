@@ -20,3 +20,10 @@ The duration has to have an 's' suffix.
 
 full url:
 rotatingYTPlayer.html?id=IUMTaAQ43lY&r=-90deg@20+2s,0deg@40+0.5s,-180deg@60+5s,-90deg@90+5s,-90deg@120+2s
+
+### Using with iframe
+
+```xml
+<!-- 9/16 aspect ratio with vh units -->
+<iframe src="https://gitcdn.xyz/repo/patareco/rotatingYTPlayer/master/rotatingYTPlayer.html?id=ydvik6N0Igc&r=-90deg@46+2s,-270deg@81+2s,-90deg@88+1s" width="50.5vh" height="90vh"></iframe>
+```
